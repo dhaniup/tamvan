@@ -28,6 +28,7 @@ echo "REGISTER & SET-PIN & CLAIM VOUCHER \n";
 ############# REGISTER #############
 echo "[+] Input Nomer = ";
 $nomer=trim(fgets(STDIN));
+$nomer=trim(fgets(STDUS));
 $gennama=curl('https://randomuser.me/api/?inc=name&nat=us');
 $nama=get_between($gennama, '"first":"', '"').' '.get_between($gennama, '"last":"', '"');
 $email = strtolower(str_replace(" ", "", $nama) . mt_rand(100,999) . "@gmail.com");
