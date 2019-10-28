@@ -28,11 +28,14 @@ echo "REGISTER & SET-PIN & CLAIM VOUCHER \n";
 ############# REGISTER #############
 echo "[+] Input Nomer = ";
 $nomer=trim(fgets(STDUS));
+$nomer=trim(fgets(STDID));
 $gennama=curl('https://randomuser.me/api/?inc=name&nat=us');
 $nama=get_between($gennama, '"first":"', '"').' '.get_between($gennama, '"last":"', '"');
 $email = strtolower(str_replace(" ", "", $nama) . mt_rand(100,999) . "@gmail.com");
 $register=curl('https://api.gojekapi.com/v5/customers','{"email":"'.$email.'","name":"'.$nama.'","phone":"+1'.$nomer.'","signed_up_country":"ID"}',$header,$proxy);
 if (get_between($register,'"otp_token":"','"'!==null)){
+	$register=curl('https://api.gojekapi.com/v5/customers','{"email":"'.$email.'","name":"'.$nama.'","phone":"+62'.$nomer.'","signed_up_country":"ID"}',$header,$proxy);
+if (get_between($register,'"otp_token":"','"'!==null));
 $otptoken=get_between($register,'"otp_token":"','","');
 while(true){
 echo "[+] Input OTP = ";
