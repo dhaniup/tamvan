@@ -1,123 +1,93 @@
 <?php
-$pin="121213";
-error_reporting(E_ERROR | E_PARSE);;
-error_reporting(E_ERROR | E_PARSE);
-$header = array();
-$header[] = "X-Platform:Android";
-$header[] = 'X-UniqueId:c'.mt_rand(0,9).'ff'.mt_rand(100,999).'d'.mt_rand(10,99).'ad'.mt_rand(1000,9999);
-$header[] = 'D'.mt_rand(0,9).':E'.mt_rand(0,9).':'.mt_rand(10,99).':'.mt_rand(10,99).':'.mt_rand(10,99).':'.mt_rand(0,9).'F:F'.mt_rand(0,9).':'.mt_rand(10,99).':'.mt_rand(10,99).':FB:CD:'.mt_rand(10,99).':'.mt_rand(10,99).':'.mt_rand(0,9).'E:FF:'.mt_rand(0,9).'F:'.mt_rand(10,99).':'.mt_rand(0,9).'A:'.mt_rand(10,99).':D'.mt_rand(0,9).':'.mt_rand(10,99).':'.mt_rand(0,9).'E:'.mt_rand(10,99).':'.mt_rand(0,9).'C:'.mt_rand(0,9).'E:'.mt_rand(10,99).':B'.mt_rand(0,9).':'.mt_rand(10,99).':'.mt_rand(10,99).':'.mt_rand(10,99).':'.mt_rand(0,9).'D:'.mt_rand(0,9).'A:BD';
-$header[] = "X-AppVersion:3.39.1";
-$header[] = "X-AppId:com.gojek.app";
-$header[] = "Accept:application/json";
-$header[] = 'X-Session-ID:'.mt_rand(0,9).'c'.mt_rand(100,999).'ba'.mt_rand(0,9).'-'.mt_rand(10,99).'c'.mt_rand(0,9).'-'.mt_rand(0,9).'a'.mt_rand(10,99).'-'.mt_rand(1000,9999).'-'.mt_rand(10,99).'e'.mt_rand(0,9).'bc'.mt_rand(10000,99999).'b'; 
-$PhoneModel=array("G960F","G892A","G930VC","G935S","G920V","G928X");
-$header[] = "X-PhoneModel:samsung,SM-".$PhoneModel[mt_rand(0,5)]; 
-$header[] = "X-PushTokenType:FCM";    
-$header[] = 'X-DeviceOS:Android,'.mt_rand(7,9).'.0';
-$header[] = 'X-DeviceToken:e'.mt_rand(0,9).'_'.generateRandomString(90).'-KIL'.generateRandomString(40).'--'.generateRandomString(13);
-$header[] = 'Accept-Language:en-ID'; 
-$header[] = 'X-User-Locale:en_ID'; 
-$header[] = 'X-Location:'.mt_rand(10,99).'.9858'.mt_rand(10,99).',-'.mt_rand(100,999).'.25411'.mt_rand(10,99).''; 
-$header[] = 'X-Location-Accuracy:3.9'; 
-$header[] = 'X-M1:1:__'.generateRandomString(32).','.mt_rand(0,9).':'.generateRandomString(16).','.mt_rand(0,9).':'.mt_rand(1000000000000,9999999999999).'-'.mt_rand(100000000000000000,999999999999999999).','.mt_rand(0,9).':'.mt_rand(10000,99999).','.mt_rand(0,9).':msm'.mt_rand(1000,9999).'|'.mt_rand(1000,9999).'|'.mt_rand(0,9).','.mt_rand(0,9).':'.mt_rand(01,24).':'.mt_rand(00,60).':'.mt_rand(00,60).':'.mt_rand(0,9).'E:'.mt_rand(10,99).':F'.mt_rand(0,9).','.mt_rand(0,9).':dream2lteks'.generateRandomString(16).',8:720x1280,9:passive\,gps,10:1,11:UNKNOWN'; 
-$header[] = 'Content-Type:application/json; charset=UTF-8'; 
-$header[] = 'Host:api.gojekapi.com'; 
-$header[] = 'Connection:Keep-Alive';
-$header[] = 'User-Agent:okhttp/3.12.1';
-echo "REGISTER & SET-PIN & CLAIM VOUCHER \n";
-############# REGISTER #############
-echo "[+] Input Nomer = ";
-$nomer=trim(fgets(STDUS));
-$nomer=trim(fgets(STDID));
-$gennama=curl('https://randomuser.me/api/?inc=name&nat=us');
-$nama=get_between($gennama, '"first":"', '"').' '.get_between($gennama, '"last":"', '"');
-$email = strtolower(str_replace(" ", "", $nama) . mt_rand(100,999) . "@gmail.com");
-$register=curl('https://api.gojekapi.com/v5/customers','{"email":"'.$email.'","name":"'.$nama.'","phone":"+1'.$nomer.'","signed_up_country":"ID"}',$header,$proxy);
-if (get_between($register,'"otp_token":"','"'!==null)){
-	$register=curl('https://api.gojekapi.com/v5/customers','{"email":"'.$email.'","name":"'.$nama.'","phone":"+62'.$nomer.'","signed_up_country":"ID"}',$header,$proxy);
-if (get_between($register,'"otp_token":"','"'!==null));
-$otptoken=get_between($register,'"otp_token":"','","');
-while(true){
-echo "[+] Input OTP = ";
-$otp=trim(fgets(STDIN));
-$verif=curl('https://api.gojekapi.com/v5/customers/phone/verify','{"client_name":"gojek:cons:android","client_secret":"83415d06-ec4e-11e6-a41b-6c40088ab51e","data":{"otp":"'.$otp.'","otp_token":"'.$otptoken.'"}}',$header,$proxy);
-if(get_between($verif,'"access_token":"','"'!==null)){
-$token=get_between($verif,'"access_token":"','"');
-$r_token=get_between($verif,'"refresh_token":"','"');
-$uuid=get_between($verif,'"resource_owner_id":',',');
-############# SET PIN #############
-$header[] = "User-uuid: $uuid";
-$header[] = "Authorization: Bearer $token";
-$setpin=curl('https://api.gojekapi.com/wallet/pin','{"pin":"'.$pin.'"}',$header,$proxy);
-echo "[+] Input OTP Set-Pin = ";
-$otp_pin=trim(fgets(STDIN));
-$header[] = "otp: $otp_pin"; 
-$verif_setpin=curl('https://api.gojekapi.com/wallet/pin','{"pin":"'.$pin.'"}',$header,$proxy);
-echo "[+] Process Redeem GOFOODBOBA07 = ";
-$GOFOODBOBA07=curl('https://api.gojekapi.com/go-promotions/v1/promotions/enrollments','{"promo_code":"GOFOODBOBA07"}',$header,$proxy);
-if (get_between($GOFOODBOBA07,'"success":',',')=="true"){
-	echo "DHANI TAMVAN DAPET 20RB \n";	
-	$live = "token-accounts.txt";
-	$fopen1 = fopen($live, "a+");
-	$fwrite1 = fwrite($fopen1, "TOKEN => ".$token." \n NOMOR => ".$nomer." \n");
-	fclose($fopen1);
-	echo "[+] File Token saved in ".$live." \n";
+error_reporting(0);
+function getStr($string,$start,$end){
+	$str = explode($start,$string);
+	$str = explode($end,($str[1]));
+	return $str[0];
 }
-else{
-	echo "YahhhGagal \n";
-}
-sleep(3);
-     break;
-}
-else{
-	echo get_between($verif,'"message":"','"')."\n";
-}}}
-else{
-	die(get_between($register,'"message":"','"')."\n");
-}
-function curl($url, $fields = null, $header = null,$proxy=null)
-    {
-        $c = curl_init();
-        curl_setopt($c, CURLOPT_URL, $url);
-        curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
-		if ($proxy !== null) {
-		curl_setopt($c, CURLOPT_HTTPPROXYTUNNEL, 0);
-		curl_setopt($c, CURLOPT_PROXY, $proxy);
-		}
-        curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-        if ($fields !== null) {
-            curl_setopt($c, CURLOPT_POST, 1);
-            curl_setopt($c, CURLOPT_POSTFIELDS, $fields);
-			//array_push($header,'Content-Length:'.filesize($fields)); 
+
+
+function warna($text,$warna){
+        $warna = strtoupper($warna);
+        $list = array();
+        $list['BLACK'] = "\033[30m";
+        $list['RED'] = "\033[31m";
+        $list['GREEN'] = "\033[32m";
+        $list['YELLOW'] = "\033[33m";
+        $list['BLUE'] = "\033[34m";
+        $list['MAGENTA'] = "\033[35m";
+        $list['CYAN'] = "\033[36m";
+        $list['WHITE'] = "\033[37m";
+        $list['RESET'] = "\033[39m";
+        $warna = $list[$warna];
+        $reset = $list['RESET'];
+        if(in_array($warna,$list)){
+                $text = "$warna$text$reset";
+        }else{
+                $text = $text;
         }
-		else if ($fields == null) {
-		curl_setopt($c, CURLOPT_CUSTOMREQUEST, "GET");
-		}			
-        if ($header !== null) {
-            curl_setopt($c, CURLOPT_HTTPHEADER, $header);
+        return $text;
+}
+function usd_to_twd($cookie,$csrf){
+	$arr = array("\r","	");
+	$url = "https://www.paypal.com/myaccount/money/api/currencies/transfer";
+	$h = explode("\n",str_replace($arr,"","Cookie: $cookie
+	Content-Type: application/json
+	user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"));
+	$body = "{\"sourceCurrency\":\"USD\",\"sourceAmount\":0.02,\"targetCurrency\":\"TWD\",\"_csrf\":\"$csrf\"}";
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $h);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	$x = curl_exec($ch);
+	curl_close($ch);
+	return json_decode($x,true);
+}
+function twd_to_usd($cookie,$csrf){
+	$arr = array("\r","	");
+	$url = "https://www.paypal.com/myaccount/money/api/currencies/transfer";
+	$h = explode("\n",str_replace($arr,"","Cookie: $cookie
+	Content-Type: application/json
+	user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"));
+	$body = "{\"sourceCurrency\":\"TWD\",\"sourceAmount\":1,\"targetCurrency\":\"USD\",\"_csrf\":\"$csrf\"}";
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $h);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	$x = curl_exec($ch);
+	curl_close($ch);
+	return json_decode($x,true);
+}
+echo "Berapa kali: ";
+$loop = trim(fgets(STDIN));
+$file = file_get_contents("cookie.txt");
+$cookie = $file;
+$csrf = file_get_contents("csrf.txt");
+for ($x = 0; $x < $loop; $x++) {
+	$usd_to_twd =  usd_to_twd($cookie,$csrf);
+	$output_send_usd = json_encode($usd_to_twd);
+	$amount = getStr($output_send_usd ,'"value":"','"');
+	if(strpos($output_send_usd,"null")==true){
+                $text1 = "Berhasil convert 0,02 USD to $amount TWD";
+                echo date('d-m-Y H:i:s ').$text1."\n";
+            }else{
+                $text2 = "Gagal Convert";
+				        echo date('d-m-Y H:i:s ').$text2."\n";
         }
-        $response   = curl_exec($c);
-        $httpcode = curl_getinfo($c, CURLINFO_HTTP_CODE);
-		curl_close($c);
-		return $response;
-        
-	}
-function get_between($string, $start, $end) 
-	{
-	    $string = " ".$string;
-	    $ini = strpos($string,$start);
-	    if ($ini == 0) return "";
-	    $ini += strlen($start);
-	    $len = strpos($string,$end,$ini) - $ini;
-	    return substr($string,$ini,$len);
-	}
-function generateRandomString($length) {
-    $caracters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $caractersLength = strlen($caracters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $caracters[rand(0, $caractersLength - 1)];
-    }
-    return $randomString;
-	}
+  sleep(1);
+	$twd_to_usd =  twd_to_usd($cookie,$csrf);
+	$output_send_twd = json_encode($twd_to_usd);
+	$amount = getStr($output_send_twd,'"value":"','"');
+	if(strpos($output_send_twd,"null")==true){
+                $text3 = "Berhasil convert 1 TWD  to $amount USD";
+                echo date('d-m-Y H:i:s ').$text3."\n";
+            }else{
+                 $text4 = "Gagal Convert";
+				        echo date('d-m-Y H:i:s ').$text4."\n";
+        }
+  sleep(1);
+}
